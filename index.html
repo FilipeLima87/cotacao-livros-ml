@@ -1,12 +1,78 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Cotação de Livros - ML</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cotação de Livros ML</title>
+  <meta name="description" content="Ferramenta para consulta de preços de livros no Mercado Livre para análise de mercado.">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(135deg, #0b1220, #0f172a 40%, #0b1220);
+      color: var(--text);
+    }
+    header {
+      padding: 48px 24px 16px;
+      text-align: center;
+    }
+    .badge { display: inline-block; padding: 6px 12px; border-radius: 999px; background: rgba(34,211,238,.12); color: var(--accent); font-weight: 600; }
+    h1 { margin: 16px auto 12px; font-size: clamp(32px, 6vw, 48px); line-height: 1.1; }
+    p.lead { margin: 0 auto; max-width: 760px; color: var(--muted); font-size: clamp(16px, 2.5vw, 18px); }
+    .panel {
+      max-width: 960px; margin: 32px auto; padding: 24px; background: rgba(17,24,39,.6); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.06); border-radius: 16px;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; }
+    .card { padding: 16px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; }
+    .muted { color: var(--muted); }
+    a.btn {
+      display: inline-block; margin-top: 12px; padding: 10px 16px; border-radius: 10px; background: var(--accent); color: #04232a; font-weight: 700; text-decoration: none;
+    }
+    footer { text-align: center; color: var(--muted); padding: 32px 16px 48px; }
+    code, .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: rgba(255,255,255,.06); padding: 2px 6px; border-radius: 6px; }
+  </style>
 </head>
 <body>
-  <h1>Bem-vindo à Cotação de Livros</h1>
-  <p>Este é um projeto de consulta de preços de livros no Mercado Livre.</p>
-  <p><a href="politica-privacidade.html">Política de Privacidade</a></p>
+  <header>
+    <span class="badge">Aplicação</span>
+    <h1>Cotação de Livros ML</h1>
+    <p class="lead">
+      Ferramenta de análise de mercado que lê ofertas públicas de <strong>livros</strong> no Mercado Livre para comparar preços e variações de forma automatizada.
+      Não realizamos vendas, apenas consulta e agregação de dados públicos.
+    </p>
+  </header>
+
+  <main class="panel">
+    <div class="grid">
+      <section class="card">
+        <h3>O que fazemos</h3>
+        <p class="muted">Consultamos endpoints públicos/Autorizados do Mercado Livre para obter preços, títulos, URLs e demais metadados de livros com o objetivo de gerar relatórios de cotação.</p>
+      </section>
+      <section class="card">
+        <h3>Como tratamos dados</h3>
+        <p class="muted">Não coletamos nem armazenamos dados pessoais de usuários finais. Para detalhes, consulte nossa <a href="./privacidade.html">Política de Privacidade</a>.</p>
+      </section>
+      <section class="card">
+        <h3>Contato</h3>
+        <p class="muted">Dúvidas ou solicitações de remoção de conteúdo? Fale com a gente:</p>
+        <p><span class="code">vendasclubedolivro@gmail.com</span></p>
+      </section>
+    </div>
+    <p><a class="btn" href="./privacidade.html">Ver Política de Privacidade</a></p>
+  </main>
+
+  <footer>
+    © <span id="y"></span> Cotação de Livros ML. Todos os direitos reservados.
+  </footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
