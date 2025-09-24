@@ -1,13 +1,54 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Política de Privacidade</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Política de Privacidade — Cotação de Livros ML</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial; margin: 0; background: #0f172a; color: #e5e7eb; }
+    main { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: clamp(28px, 4vw, 40px); }
+    .card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 24px; }
+    a { color: #22d3ee; }
+    .muted { color: #9ca3af; }
+  </style>
 </head>
 <body>
-  <h1>Política de Privacidade</h1>
-  <p>Este site é apenas para fins de consulta de preços de livros no Mercado Livre.</p>
-  <p>Não coletamos dados pessoais dos usuários.</p>
-  <p>Para dúvidas, entre em contato pelo e-mail: seuemail@dominio.com</p>
+  <main>
+    <h1>Política de Privacidade</h1>
+    <div class="card">
+      <p class="muted"><em>Última atualização: <span id="date"></span></em></p>
+      <h3>Quem somos</h3>
+      <p>“Cotação de Livros ML” é uma aplicação de análise de mercado que consulta ofertas públicas de livros no Mercado Livre para fins estatísticos e comparativos.</p>
+
+      <h3>Dados que tratamos</h3>
+      <ul>
+        <li>Dados públicos de anúncios (título, preço, URL, atributos do produto) obtidos via API do Mercado Livre.</li>
+        <li><strong>Não</strong> coletamos nem armazenamos dados pessoais de consumidores finais.</li>
+      </ul>
+
+      <h3>Base legal</h3>
+      <p>O tratamento se baseia em <strong>legítimo interesse</strong> para análise de mercado e em conformidade com os <a href="https://developers.mercadolivre.com.br/pt_br/terms-and-conditions" target="_blank" rel="noopener">Termos da API do Mercado Livre</a>.</p>
+
+      <h3>Retenção</h3>
+      <p>Conservamos apenas agregações estatísticas (como médias de preço). Logs técnicos são mantidos por até 90 dias para auditoria.</p>
+
+      <h3>Compartilhamento</h3>
+      <p>Não compartilhamos dados com terceiros, exceto quando exigido por lei.</p>
+
+      <h3>Segurança</h3>
+      <p>As chaves e tokens de acesso são protegidos e não são expostos publicamente. O acesso é restrito.</p>
+
+      <h3>Seus direitos</h3>
+      <p>Para qualquer solicitação, entre em contato pelo e-mail <a href="mailto:contato@seu-email.com">vendasclubedolivro@gmail.com</a>.</p>
+    </div>
+    <p class="muted" style="margin-top:16px"><a href="./index.html">← Voltar</a></p>
+  </main>
+  <script>
+    const d = new Date();
+    const f = new Intl.DateTimeFormat('pt-BR', { day:'2-digit', month:'long', year:'numeric' }).format(d);
+    document.getElementById('date').textContent = f;
+  </script>
 </body>
 </html>
