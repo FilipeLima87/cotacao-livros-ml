@@ -1,78 +1,428 @@
-
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cotação de Livros ML</title>
-  <meta name="description" content="Ferramenta para consulta de preços de livros no Mercado Livre para análise de mercado.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clube do Livro Infantil — Vitrine</title>
+  <meta name="description" content="Vitrine de livros infantis com sinopse e link para compra. Indicações carinhosas para famílias e educadores.">
+  <meta name="theme-color" content="#f7e7c4">
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #22d3ee;
+    :root{
+      --bg:#fffaf3; /* bege claro */
+      --paper:#ffffff;
+      --ink:#1f2937; /* cinza escuro */
+      --muted:#6b7280; /* cinza médio */
+      --brand:#f59e0b; /* âmbar */
+      --brand-strong:#d97706;
+      --accent:#10b981; /* verde */
+      --radius:18px;
+      --shadow:0 10px 25px rgba(31,41,55,.08);
+      --shadow-sm:0 2px 10px rgba(31,41,55,.06);
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(135deg, #0b1220, #0f172a 40%, #0b1220);
-      color: var(--text);
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+    a{color:inherit}
+    .wrap{max-width:1080px;margin:auto;padding:24px}
+    header.hero{display:grid;gap:14px;align-items:center;grid-template-columns:1fr}
+    .badge{display:inline-flex;gap:8px;align-items:center;background:var(--paper);border-radius:999px;padding:6px 12px;box-shadow:var(--shadow-sm);font-size:12px;color:var(--brand-strong)}
+    .title{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0}
+    .subtitle{margin:0;color:var(--muted);font-size:clamp(14px,2vw,18px)}
+    .filters{display:grid;gap:10px;grid-template-columns:1fr; margin-top:14px}
+    .controls{display:grid;gap:10px;grid-template-columns:1fr 1fr 1fr}
+    .control{background:var(--paper);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow-sm);display:flex;align-items:center}
+    .control input,.control select{width:100%;border:0;background:transparent;outline:none;font-size:14px;color:var(--ink)}
+    .grid{display:grid;gap:18px;margin-top:20px;grid-template-columns:repeat(1, minmax(0,1fr))}
+    .card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+    .cover{aspect-ratio:3/4;object-fit:cover;width:100%;background:#f3f4f6}
+    .body{padding:14px 16px;display:grid;gap:8px}
+    .tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{font-size:12px;background:#f3f4f6;border-radius:999px;padding:6px 10px;color:#374151}
+    .title-sm{font-size:18px;margin:2px 0 0 0}
+    .syn{color:var(--muted);font-size:14px}
+    .cta{display:flex;gap:10px;margin-top:8px}
+    .btn{flex:1;display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:12px;padding:12px 14px;font-weight:600;cursor:pointer;transition:transform .06s ease, box-shadow .2s ease}
+    .btn.primary{background:var(--brand);color:#111827;box-shadow:var(--shadow-sm)}
+    .btn.primary:hover{background:var(--brand-strong)}
+    .btn.alt{background:#ecfdf5;color:#065f46}
+    .btn:active{transform:translateY(1px)}
+    footer{margin:36px 0 10px;color:var(--muted);text-align:center;font-size:14px}
+
+    .empty{display:none;text-align:center;color:var(--muted);padding:36px}
+
+    /* responsive */
+    @media (min-width:720px){
+      header.hero{grid-template-columns:1.1fr .9fr}
+      .filters{grid-template-columns:1.2fr .8fr}
+      .grid{grid-template-columns:repeat(3, minmax(0,1fr))}
     }
-    header {
-      padding: 48px 24px 16px;
-      text-align: center;
-    }
-    .badge { display: inline-block; padding: 6px 12px; border-radius: 999px; background: rgba(34,211,238,.12); color: var(--accent); font-weight: 600; }
-    h1 { margin: 16px auto 12px; font-size: clamp(32px, 6vw, 48px); line-height: 1.1; }
-    p.lead { margin: 0 auto; max-width: 760px; color: var(--muted); font-size: clamp(16px, 2.5vw, 18px); }
-    .panel {
-      max-width: 960px; margin: 32px auto; padding: 24px; background: rgba(17,24,39,.6); backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.06); border-radius: 16px;
-    }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; }
-    .card { padding: 16px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; }
-    .muted { color: var(--muted); }
-    a.btn {
-      display: inline-block; margin-top: 12px; padding: 10px 16px; border-radius: 10px; background: var(--accent); color: #04232a; font-weight: 700; text-decoration: none;
-    }
-    footer { text-align: center; color: var(--muted); padding: 32px 16px 48px; }
-    code, .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: rgba(255,255,255,.06); padding: 2px 6px; border-radius: 6px; }
   </style>
 </head>
 <body>
-  <header>
-    <span class="badge">Aplicação</span>
-    <h1>Cotação de Livros ML</h1>
-    <p class="lead">
-      Ferramenta de análise de mercado que lê ofertas públicas de <strong>livros</strong> no Mercado Livre para comparar preços e variações de forma automatizada.
-      Não realizamos vendas, apenas consulta e agregação de dados públicos.
-    </p>
-  </header>
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <span class="badge">✨ Curadoria carinhosa • Leitura em família</span>
+        <h1 class="title">Clube do Livro Infantil</h1>
+        <p class="subtitle">Escolha uma história, leia a sinopse e clique para adquirir. Cada livro é uma sementinha plantada no coração da criança. </p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1400&auto=format&fit=crop" alt="Livros infantis empilhados" class="cover" style="border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:16/11;">
+      </div>
+    </header>
 
-  <main class="panel">
-    <div class="grid">
-      <section class="card">
-        <h3>O que fazemos</h3>
-        <p class="muted">Consultamos endpoints públicos/Autorizados do Mercado Livre para obter preços, títulos, URLs e demais metadados de livros com o objetivo de gerar relatórios de cotação.</p>
-      </section>
-      <section class="card">
-        <h3>Como tratamos dados</h3>
-        <p class="muted">Não coletamos nem armazenamos dados pessoais de usuários finais. Para detalhes, consulte nossa <a href="./privacidade.html">Política de Privacidade</a>.</p>
-      </section>
-      <section class="card">
-        <h3>Contato</h3>
-        <p class="muted">Dúvidas ou solicitações de remoção de conteúdo? Fale com a gente:</p>
-        <p><span class="code">vendasclubedolivro@gmail.com</span></p>
-      </section>
-    </div>
-    <p><a class="btn" href="./privacidade.html">Ver Política de Privacidade</a></p>
-  </main>
+    <section class="filters">
+      <div class="control" title="Buscar por título, autor ou palavras da sinopse">
+        <input id="q" type="search" placeholder="Buscar por título, autor ou palavra-chave…" aria-label="Buscar livros" />
+      </div>
+      <div class="controls">
+        <div class="control"><select id="tema" aria-label="Filtrar por tema">
+          <option value="">Todos os temas</option>
+          <option>Emoções</option><option>Amizade</option><option>Rotina</option><option>Bíblia</option><option>Clássicos</option>
+        </select></div>
+        <button class="btn alt" id="limpar" type="button" title="Limpar filtros">Limpar filtros</button>
+      </div>
+    </section>
 
-  <footer>
-    © <span id="y"></span> Cotação de Livros ML. Todos os direitos reservados.
-  </footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+    <section class="grid" id="grid" aria-live="polite"></section>
+    <div id="empty" class="empty">Nenhum livro encontrado com esses filtros. Tente remover algum filtro ou buscar por outra palavra.</div>
+
+    <footer>
+      <p>💛 Dica: leia em voz alta, com pausas e perguntas. A leitura é um encontro, não uma corrida.</p>
+      <p>© <span id="year"></span> Clube do Livro Infantil</p>
+    </footer>
+  </div>
+
+  <script>
+    // ====== CONFIGURAÇÕES RÁPIDAS ======
+    const UTM_PARAMS = 'utm_source=instagram&utm_medium=linkinbio&utm_campaign=clube-do-livro';
+
+    // ====== CATÁLOGO EMBARCADO (fallback) ======
+    const BOOKS_FALLBACK = [
+      {
+        id: 'livro-1',
+        title: 'O Menino que Engolia o Choro',
+        author: 'Gilberto Amaral (direção do curta) — indicação de leitura temática',
+        theme: 'Emoções',
+        cover: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1200&auto=format&fit=crop',
+        synopsis: 'Uma história para conversar sobre chorar, sentir e pedir ajuda. Excelente porta de entrada para falar de sentimentos com a criança.',
+        affiliate: 'https://exemplo.com/produto/menino-choro',
+      },
+      {
+        id: 'livro-2',
+        title: 'A Lagarta Muito Comilona',
+        author: 'Eric Carle',
+        theme: 'Rotina',
+        cover: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop',
+        synopsis: 'Clássico para trabalhar dias da semana, alimentação e transformação. Ótimo para leitura participativa.',
+        affiliate: 'https://exemplo.com/produto/lagarta-comilona',
+      },
+      {
+        id: 'livro-3',
+        title: 'O Grande Dia do Pequeno Urso',
+        author: 'R. K. Morrow',
+        theme: 'Amizade',
+        cover: 'https://images.unsplash.com/photo-1531983412531-1f49a365ffed?q=80&w=1200&auto=format&fit=crop',
+        synopsis: 'Narrativa doce e simples que acolhe o cotidiano dos bem pequenos. Ideal para criar rituais de leitura antes de dormir.',
+        affiliate: 'https://exemplo.com/produto/pequeno-urso',
+      },
+      {
+        id: 'as-aventuras-do-tempo',
+        title: 'As Aventuras do Tempo',
+        author: 'Míriam Leitão',
+        theme: 'Emoções',
+        cover: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1400&auto=format&fit=crop',
+        synopsis: 'Mel é uma menina fascinada por histórias. Um dia, ela disse à vovó Beth: “Me conta uma história de quando você era criança!”. A vovó então leva Mel em uma aventura através do tempo, recordando momentos da própria infância. Tudo fica ainda mais emocionante quando as duas avançam ainda mais no passado e Mel conhece uma história vivida pela bisavó de Beth, às margens do rio Doce, ao lado de um amiguinho indígena que luta para defender a mata. Neste livro cheio de lembranças e afeto, Míriam Leitão trabalha a noção de tempo e transmite uma mensagem comovente de respeito, amizade e memória.',
+        affiliate: 'https://mercadolivre.com/sec/2YbpY2H',
+      },
+    ];
+
+    // ====== ELEMENTOS ======
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const q = document.getElementById('q');
+    const tema = document.getElementById('tema');
+    const limpar = document.getElementById('limpar');
+
+    // ====== HELPERS ======
+    function buildAffiliateUrl(link, id){
+      try{
+        const hasQuery = link.includes('?');
+        const sep = hasQuery ? '&' : '?';
+        return link + sep + UTM_PARAMS + '&book_id=' + encodeURIComponent(id || '');
+      }catch(e){
+        return link; // fallback
+      }
+    }
+
+    // ====== RENDER ======
+    function cardTpl(b){
+      const safeHref = buildAffiliateUrl(b.affiliate, b.id || b.title);
+      const themeBadge = b.theme ? '<span class="tag">' + b.theme + '</span>' : '';
+      return (
+        '<article class="card" data-theme="' + (b.theme || '') + '">' +
+          '<img class="cover" loading="lazy" alt="Capa do livro ' + (b.title||'') + '" src="' + (b.cover||'') + '">' +
+          '<div class="body">' +
+            '<div class="tags">' + themeBadge + '</div>' +
+            '<h3 class="title-sm">' + (b.title||'') + '</h3>' +
+            '<div class="syn">' + (b.synopsis||'') + '</div>' +
+            '<div class="syn" style="font-size:12px">Autor(a): ' + (b.author||'') + '</div>' +
+            '<div class="cta">' +
+              '<a class="btn primary" href="' + safeHref + '" target="_blank" rel="noopener" aria-label="Comprar ' + (b.title||'') + '">Quero este livro</a>' +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }
+
+    function render(list){
+      grid.innerHTML = list.map(cardTpl).join('');
+      empty.style.display = list.length ? 'none' : 'block';
+    }
+
+    // ====== BUSCA/FILTRO ======
+    function normalize(str){return (str||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');}
+    function applyFilters(){
+      const term = normalize(q?.value);
+      const fTema = tema?.value || '';
+      const filtered = BOOKS_DATA.filter(b => {
+        const text = normalize(`${b.title} ${b.author} ${b.synopsis}`);
+        const byTerm = !term || text.includes(term);
+        const byTema = !fTema || (b.theme===fTema);
+        return byTerm && byTema;
+      });
+      render(filtered);
+    }
+
+    q?.addEventListener('input', applyFilters);
+    tema?.addEventListener('change', applyFilters);
+    limpar?.addEventListener('click', () => { if(q) q.value=''; if(tema) tema.value=''; applyFilters(); });
+
+    // ====== ADMIN (COLAR LINK DA PLANILHA) ======
+    const STORAGE_KEY = 'clube_livro_sheet_url';
+    const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlxSrLpml1izk1Xmy9QKJZSRezhDu7Wrqh9AuRnL09XP6eZQAOX_937nw-XYzgbaY-7xbf1uwL9jcK/pub?gid=1276009145&single=true&output=csv';
+
+    function showAdminIfNeeded(){
+      const params = new URLSearchParams(location.search);
+      const isAdmin = params.get('admin')==='1' || location.hash==='#admin';
+      if(!isAdmin) return;
+      // Estilos do painel
+      const style = document.createElement('style');
+      style.textContent = `.admin-btn{position:fixed;right:16px;bottom:16px;padding:10px 12px;border-radius:12px;border:0;box-shadow:0 6px 20px rgba(0,0,0,.12);background:#fff;font-weight:600;cursor:pointer}
+      .admin-panel{position:fixed;inset:auto 16px 72px 16px;max-width:680px;margin-left:auto;background:#fff;border-radius:16px;box-shadow:0 30px 60px rgba(0,0,0,.18);padding:18px 16px;}
+      .admin-panel h3{margin:6px 0 10px 0}
+      .admin-panel label{font-size:14px;color:#374151;display:block;margin:8px 0 6px}
+      .admin-row{display:grid;gap:8px;grid-template-columns:1fr auto}
+      .admin-panel input{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px}
+      .admin-panel .small{font-size:12px;color:#6b7280;margin-top:8px}
+      .admin-actions{display:flex;gap:8px;margin-top:12px}
+      .admin-actions button{border:0;border-radius:10px;padding:10px 12px;font-weight:600;cursor:pointer}
+      .admin-save{background:#f59e0b}
+      .admin-clear{background:#f3f4f6}
+      `;
+      document.head.appendChild(style);
+
+      // Botão e painel
+      const btn = document.createElement('button');
+      btn.id = 'adminBtn';
+      btn.className = 'admin-btn';
+      btn.textContent = '⚙️ Admin';
+
+      const panel = document.createElement('div');
+      panel.className = 'admin-panel';
+      panel.innerHTML = `
+        <h3>Configurar planilha do catálogo (Google Sheets)</h3>
+        <label for="sheetUrl">Cole aqui o link PUBLICADO da sua planilha (CSV)</label>
+        <div class="admin-row">
+          <input id="sheetUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" />
+          <button class="admin-save">Salvar & Carregar</button>
+        </div>
+        <div class="admin-actions">
+          <button class="admin-clear">Desconectar planilha</button>
+        </div>
+        <div class="small">
+          <strong>Como fazer:</strong> 1) Crie uma planilha com as colunas: <em>title, author, theme, synopsis, cover, affiliate, publish</em>. 2) No Google Sheets: Arquivo → Compartilhar → <em>Publicar na Web</em> → selecionar a aba → formato CSV → Copiar link. 3) Cole o link acima e clique em "Salvar & Carregar". <br/>
+          Use a coluna <em>publish</em> = <code>1</code> para publicar o livro (linhas sem 1 ficam ocultas).
+        </div>
+      `;
+
+      btn.addEventListener('click', () => {
+        panel.style.display = panel.style.display==='none' ? 'block' : 'none';
+      });
+
+      document.body.appendChild(btn);
+      document.body.appendChild(panel);
+
+      const input = panel.querySelector('#sheetUrl');
+      const save = panel.querySelector('.admin-save');
+      const clear = panel.querySelector('.admin-clear');
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      input.value = stored || DEFAULT_SHEET_URL || '';
+
+      save.addEventListener('click', async () => {
+        const url = input.value.trim();
+        if(!url){ alert('Cole o link CSV publicado da sua planilha.'); return; }
+        localStorage.setItem(STORAGE_KEY, url);
+        await loadFromSheet(url);
+        panel.style.display = 'none';
+      });
+
+      clear.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        BOOKS_DATA = [...BOOKS_FALLBACK];
+        applyFilters();
+        alert('Planilha desconectada. Voltamos para a lista padrão.');
+      });
+    }
+
+    // ====== CSV PARSER (simples e compatível com campos entre aspas) ======
+    function parseCSV(str){
+      const rows = [];
+      let i=0, s=str, cur='', row=[], inQ=false;
+      while(i<s.length){
+        const c=s[i];
+        if(inQ){
+          if(c==='"' && s[i+1]==='"'){ cur+='"'; i++; }
+          else if(c==='"'){ inQ=false; }
+          else { cur+=c; }
+        }else{
+          if(c==='"'){ inQ=true; }
+          else if(c===','){ row.push(cur); cur=''; }
+          else if(c==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+          else if(c==='\r'){ /* ignore */ }
+          else { cur+=c; }
+        }
+        i++;
+      }
+      if(cur.length||row.length) { row.push(cur); rows.push(row); }
+      return rows;
+    }
+
+    async function fetchCsvWithFallback(url){
+      // 1ª tentativa: fetch direto (pode falhar por CORS quando abrindo o arquivo via file://)
+      try{
+        const res = await fetch(url, { cache: 'no-store', mode: 'cors' });
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const txt = await res.text();
+        if(!txt || !txt.trim()) throw new Error('CSV vazio');
+        return txt;
+      }catch(err1){
+        // 2ª tentativa: proxy de leitura pública com CORS liberado
+        const proxied = 'https://r.jina.ai/http://' + url.replace(/^https?:\/\//,'');
+        const res2 = await fetch(proxied, { cache: 'no-store' });
+        if(!res2.ok) throw new Error('HTTP (proxy) '+res2.status);
+        const txt2 = await res2.text();
+        if(!txt2 || !txt2.trim()) throw new Error('CSV vazio (proxy)');
+        return txt2;
+      }
+    }
+
+    async function loadFromSheet(csvUrl){
+      try{
+        const text = await fetchCsvWithFallback(csvUrl);
+        const rows = parseCSV(text).filter(r=>r.length && r.some(x=>x&&x.trim()!==''));
+        if(rows.length<=1) throw new Error('CSV sem linhas úteis');
+        const headers = rows[0].map(h => (h||'').toLowerCase().trim());
+        const idx = name => headers.indexOf(name);
+        const out = [];
+        for(let r=1;r<rows.length;r++){
+          const c = rows[r];
+          const publish = (c[idx('publish')]||'').toString().trim();
+          if(publish && publish!=='0' && publish.toLowerCase()!=='false'){
+            out.push({
+              id: (c[idx('id')]||c[idx('title')]||`book-${r}`).trim(),
+              title: (c[idx('title')]||'').trim(),
+              author: (c[idx('author')]||'').trim(),
+              theme: (c[idx('theme')]||'').trim(),
+              synopsis: (c[idx('synopsis')]||'').trim(),
+              cover: (c[idx('cover')]||'').trim(),
+              affiliate: (c[idx('affiliate')]||'#').trim(),
+            });
+          }
+        }
+        if(out.length){
+          BOOKS_DATA = out;
+          applyFilters();
+          return true;
+        } else {
+          throw new Error('Nenhum livro com publish=1');
+        }
+      }catch(err){
+        console.warn('Erro ao carregar planilha:', err);
+        alert('Não foi possível carregar a planilha. Mantendo a lista padrão.');
+        BOOKS_DATA = [...BOOKS_FALLBACK];
+        applyFilters();
+        return false;
+      }
+    }
+        }
+        if(out.length){
+          BOOKS_DATA = out;
+          applyFilters();
+          return true;
+        }else{
+          throw new Error('Nenhum livro com publish=1 foi encontrado');
+        }
+      }catch(err){
+        console.warn('Erro ao carregar planilha:', err);
+        alert('Não foi possível carregar a planilha. Mantendo a lista padrão.');
+        BOOKS_DATA = [...BOOKS_FALLBACK];
+        applyFilters();
+        return false;
+      }
+    }
+
+    // ====== TESTES (executa se ?test=1) ======
+    function runTests(){
+      const params = new URLSearchParams(location.search);
+      if(params.get('test') !== '1') return;
+      const results = [];
+      function ok(name, cond){ results.push([name, !!cond]); if(!cond) console.error('Teste falhou:', name); }
+
+      // Teste 1: parseCSV com vírgulas e aspas
+      const csv = 'title,author,theme,synopsis,cover,affiliate,publish\n"A, B","C","Emoções","Texto, com, vírgulas","http://img","https://ex.com?x=1",1';
+      const rows = parseCSV(csv);
+      ok('CSV tem 2 linhas', rows.length === 2);
+      ok('Campo 0 contém "A, B"', rows[1][0] === 'A, B');
+
+      // Teste 2: buildAffiliateUrl junta parâmetros corretamente
+      const url1 = buildAffiliateUrl('https://ex.com/prod', 'id-1');
+      ok('UTM com ? quando não há query', url1.includes('?utm_source='));
+      const url2 = buildAffiliateUrl('https://ex.com/prod?ref=abc', 'id-2');
+      ok('UTM com & quando já há query', /\&utm_source=/.test(url2));
+
+      // Teste 3: cardTpl não quebra com título contendo crase/backtick
+      const card = cardTpl({title:'Livro `Especial`', author:'Autor', theme:'Emoções', synopsis:'S', cover:'img', affiliate:'https://ex.com'});
+      ok('cardTpl retorna string', typeof card === 'string' && card.includes('Livro'));
+
+      const passed = results.filter(r=>r[1]).length;
+      console.log('Testes concluídos:', passed + '/' + results.length, results);
+      alert('Testes concluídos: ' + passed + '/' + results.length + ' (veja o console para detalhes)');
+    }
+
+    // ====== BOOT ======
+    let BOOKS_DATA = [...BOOKS_FALLBACK];
+
+    // Detectar planilha por querystring (?sheet=) ou localStorage
+    (function init(){
+      document.getElementById('year').textContent = new Date().getFullYear();
+      showAdminIfNeeded();
+      const params = new URLSearchParams(location.search);
+      const fromParam = params.get('sheet');
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if(fromParam){
+        const url = decodeURIComponent(fromParam);
+        localStorage.setItem(STORAGE_KEY, url);
+        loadFromSheet(url);
+      } else if(stored){
+        loadFromSheet(stored);
+      } else if (typeof DEFAULT_SHEET_URL !== 'undefined' && DEFAULT_SHEET_URL){
+        loadFromSheet(DEFAULT_SHEET_URL);
+      } else {
+        render(BOOKS_DATA);
+      }
+      runTests();
+    })();
+  </script>
 </body>
 </html>
